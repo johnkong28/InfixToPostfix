@@ -78,31 +78,49 @@ public class InfixToPostfix {
     public static String convert(String infix) {
         Stack<String> stack = new Stack<>();
         StringBuilder output = new StringBuilder();
-        Scanner thcan = new Scanner(infix);
-        boolean stackmaxxing = false;
-        while (thcan.hasNext()){
-            String necktht = thcan.next();
-            if (!(isParen(necktht) || isOperator(necktht))){
-                if (stackmaxxing) {
+
+        try (Scanner thcan = new Scanner(infix)) {
+            while (thcan.hasNext()) {
+                String necktht = thcan.next();
+
+                if (!isParen(necktht) && !isOperator(necktht)) {
+                    output.append(necktht).append(" ");
+                } else if (necktht.equals("(")) {
                     stack.push(necktht);
+                } else if (necktht.equals(")")) {
+                    while (!stack.isEmpty() && !stack.peek().equals("(")) {
+                        output.append(stack.pop()).append(" ");
+                    }
+
+                    if (stack.isEmpty()) {
+                        throw new IllegalArgumentException("Mismatched parentheses");
+                    }
+
+                    stack.pop(); // Discard "(".
                 } else {
-                    output.append(necktht);
+                    // Pop operators with higher or equal precedence.
+                    while (!stack.isEmpty()
+                            && !stack.peek().equals("(")
+                            && precedence(stack.peek()) >= precedence(necktht)) {
+                        output.append(stack.pop()).append(" ");
+                    }
+
+                    stack.push(necktht);
                 }
-            } else if (necktht == "("){
-                stackmaxxing = true;
-                stack.push(necktht);
-            } else if (necktht == ")"){
-                while (stack.lastElement() != "("){
-                    output.append(stack.pop());
-                }
-            }
-
-
-
-            if (precedence(necktht) == 0){
-
             }
         }
+
+        // Output any remaining operators.
+        while (!stack.isEmpty()) {
+            String token = stack.pop();
+
+            if (token.equals("(")) {
+                throw new IllegalArgumentException("Mismatched parentheses");
+            }
+
+            output.append(token).append(" ");
+        }
+
         return output.toString().trim();
     }
 

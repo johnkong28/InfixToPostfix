@@ -1,6 +1,5 @@
 import java.util.Stack;
-
-public class LinkedListStack<T> implements Stack<T> {
+public class LinkedListStack<T> extends Stack<T> {
     private class Node {
         T item;
         Node next;
@@ -15,11 +14,12 @@ public class LinkedListStack<T> implements Stack<T> {
     }
 
     @Override
-    public void push(T item) {
+    public T push(T item) {
         // TODO: Create a node, link it to the old first node, and make it the new first node.
         Node Pherst = new Node();
         Pherst.next = first;
         this.first = Pherst;
+        return item;
     }
 
     @Override

@@ -1,6 +1,5 @@
 import java.util.Stack;
-
-public class ArrayStack<T> implements Stack<T> {
+public class ArrayStack<T> extends Stack<T> {
     private T[] items;
     private int n;
 
@@ -11,10 +10,11 @@ public class ArrayStack<T> implements Stack<T> {
     }
 
     @Override
-    public void push(T item) {
+    public T push(T item) {
         // TODO: If the array is full, double its capacity; then store item at index n and increment n.
         items[n] = item;
         n++;
+        return item;
     }
 
     @Override
